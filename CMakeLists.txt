@@ -12,6 +12,10 @@ add_message_files(
     BBox.msg
     QR_Detection.msg
     Rotation_Detection.msg
+    April_Detection.msg
+    Landolt_Detection.msg
+    Hazmat_Detection.msg
+    Image_Detection.msg
 )
 
 generate_messages(
