@@ -31,7 +31,7 @@ float angleBetween(cv::Point2f origin, cv::Point2f dest)
     return std::atan2(det, dot) * (float)(180.0 / M_PI) + 180.0f;  
 }
 
-class LandoltDetectorNode
+class LandoltDetector
 {
 private:
     ros::NodeHandle nh_;
@@ -116,7 +116,7 @@ private:
     }
 
 public:
-    LandoltDetectorNode(ros::NodeHandle& nh, ros::NodeHandle& pnh) 
+    LandoltDetector(ros::NodeHandle& nh, ros::NodeHandle& pnh) 
         : nh_(nh), private_nh_(pnh)
     {
         private_nh_.param<std::string>("camera_topic", camera_topic_, "/screen/camera/image_raw/compressed");
@@ -127,7 +127,7 @@ public:
         min_ratio_circle_ = 0.8f;
         min_depth_ = 10;
 
-        sub_camera_compressed_ = nh_.subscribe(camera_topic_, 1, &LandoltDetectorNode::image_callback, this);
+        sub_camera_compressed_ = nh_.subscribe(camera_topic_, 1, &LandoltDetector::image_callback, this);
         cv_msg_pub_ = nh_.advertise<cv_msg::CV_msg>(cv_msg_topic_, 1);
     }
 
@@ -149,7 +149,8 @@ public:
         findLandoltGaps(cv_ptr->image, gaps);
 
         cv_msg::CV_msg out_msg;
-        out_msg.header = image_msg->header;
+        out_msg.header.stamp = ros::Time::now();
+        out_msg.header.frame_id = "placeholder_frame";
         out_msg.camera_id = camera_id_;
 
         for (size_t i = 0; i < gaps.angles.size(); ++i)
@@ -176,7 +177,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    LandoltDetectorNode detector(nh, private_nh);
+    LandoltDetector detector(nh, private_nh);
 
     ros::spin();
     return 0;
