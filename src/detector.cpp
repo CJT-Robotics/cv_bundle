@@ -15,8 +15,9 @@ public:
         pnh_.param<int>("camera_id", camera_id_, 0);
         
         image_sub_ = nh_.subscribe(sub_topic, 1, &QR::compressedImageCallback, this);
-        cv_pub_ = nh_.advertise<cv_msg::CV_msg>(pub_topic, 10);
+        cv_pub_ = nh_.advertise<cv_msg::CV_msg>(pub_topic + "/qr", 10);
         
+        scanner_.set_config(zbar::ZBAR_NONE, zbar::ZBAR_CFG_ENABLE, 0);
         scanner_.set_config(zbar::ZBAR_QRCODE, zbar::ZBAR_CFG_ENABLE, 1);
     }
 
@@ -87,7 +88,7 @@ private:
 };
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "robust_qr_detector");
+    ros::init(argc, argv, "cv_qr_detector");
     QR detector;
     ros::spin();
     return 0;
