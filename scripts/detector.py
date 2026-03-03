@@ -20,7 +20,7 @@ class ImageProcessor:
 
         self.detector = pupil_apriltags.Detector(families=tag_standard)
 
-        self.cv_pub = rospy.Publisher(self.cv_msg_topic, CV_msg, queue_size=1)
+        self.cv_pub = rospy.Publisher(self.cv_msg_topic + "/april", CV_msg, queue_size=1)
         self.image_sub = rospy.Subscriber(cam_input_topic, CompressedImage, self.image_callback)
 
     def image_callback(self, msg):
@@ -65,7 +65,7 @@ class ImageProcessor:
             rospy.logerr(f'CvBridge Error: {e}')
 
 def main():
-    rospy.init_node('april_detector_node', anonymous=True)
+    rospy.init_node('cv_april_detector', anonymous=True)
     process = ImageProcessor()
 
     try:
