@@ -128,7 +128,7 @@ public:
         min_depth_ = 10;
 
         sub_camera_compressed_ = nh_.subscribe(camera_topic_, 1, &LandoltDetector::image_callback, this);
-        cv_msg_pub_ = nh_.advertise<cv_msg::CV_msg>(cv_msg_topic_, 1);
+        cv_msg_pub_ = nh_.advertise<cv_msg::CV_msg>(cv_msg_topic_ + "/landolt", 1);
     }
 
     void image_callback(const sensor_msgs::CompressedImageConstPtr &image_msg)
@@ -173,7 +173,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "landolt_detector_node");
+    ros::init(argc, argv, "cv_landolt_detector");
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
