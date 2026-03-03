@@ -39,7 +39,6 @@ class Visualizer:
                 self.data_store[detection_type] = (getattr(msg, attr_name), rospy.get_rostime())
 
     def get_alpha(self, last_time):
-        """Berechnet Alpha basierend auf dem Alter der Nachricht."""
         age = (rospy.get_rostime() - last_time).to_sec()
         if age < self.fade_start:
             return 1.0
