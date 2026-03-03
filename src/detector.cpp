@@ -6,15 +6,15 @@
 
 #include <cv_msg/CV_msg.h>
 
-class RobustQRDetector {
+class QR {
 public:
-    RobustQRDetector() : nh_(), pnh_("~") {
+    QR() : nh_(), pnh_("~") {
         std::string sub_topic, pub_topic;
         pnh_.param<std::string>("camera_topic", sub_topic, "/screen/camera/image_raw/compressed");
         pnh_.param<std::string>("cv_msg_topic", pub_topic, "/cv_bundle");
         pnh_.param<int>("camera_id", camera_id_, 0);
         
-        image_sub_ = nh_.subscribe(sub_topic, 1, &RobustQRDetector::compressedImageCallback, this);
+        image_sub_ = nh_.subscribe(sub_topic, 1, &QR::compressedImageCallback, this);
         cv_pub_ = nh_.advertise<cv_msg::CV_msg>(pub_topic, 10);
         
         scanner_.set_config(zbar::ZBAR_QRCODE, zbar::ZBAR_CFG_ENABLE, 1);
@@ -25,7 +25,7 @@ public:
         try {
             raw_img = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_COLOR);
         } catch (cv_bridge::Exception& e) {
-            ROS_ERROR("Fehler beim Dekodieren: %s", e.what());
+            ROS_ERROR("Fehler Dekodieren: %s", e.what());
             return;
         }
 
@@ -42,7 +42,7 @@ public:
         
         cv_msg::CV_msg output_msg;
         output_msg.header.stamp = ros::Time::now();
-        output_msg.header.frame_id = "camera_link"; // Oder passend zu deinem TF-Tree
+        output_msg.header.frame_id = "placeholder_frame";
         output_msg.camera_id = camera_id_;
 
         if (scanner_.scan(zbar_img) > 0) {
@@ -88,7 +88,7 @@ private:
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "robust_qr_detector");
-    RobustQRDetector detector;
+    QR detector;
     ros::spin();
     return 0;
 }
