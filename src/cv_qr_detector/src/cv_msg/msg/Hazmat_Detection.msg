@@ -1,2 +1,0 @@
-BBox bbox
-string content
